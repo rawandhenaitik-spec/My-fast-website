@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>नैतिक रावंधे की ग्लोबल एआई वेबसाइट</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+        header {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        header h1 {
+            font-size: 1.3rem;
+            margin-bottom: 3px;
+        }
+        header p {
+            font-size: 0.8rem;
+            opacity: 0.9;
+        }
+        .chat-container {
+            flex: 1;
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            overflow: hidden;
+        }
+        .chat-box {
+            flex: 1;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            border: 1px solid #334155;
+        }
+        .message {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        .ai-msg {
+            background: #334155;
+            color: #f8fafc;
+            align-self: flex-start;
+        }
+        .user-msg {
+            background: #2563eb;
+            color: white;
+            align-self: flex-end;
+        }
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 12px;
+            background: #1e293b;
+            border: 1px solid #475569;
+            color: white;
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.95rem;
+        }
+        .input-group button {
+            padding: 0 15px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95rem;
+        }
+        .mic-btn {
+            background-color: #059669 !important;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>नैतिक रावंधे की बहुभाषी एआई दुनिया 🌍</h1>
+        <p>भारत और दुनिया की किसी भी भाषा में बोलकर या लिखकर बात करें!</p>
+    </header>
+
+    <div class="chat-container">
+        <div class="chat-box" id="chatBox">
+            <div class="message ai-msg">नमस्ते! आप भारत या दुनिया की किसी भी भाषा में मुझसे बात कर सकते हैं। माइक बटन दबाकर बोल भी सकते हैं।</div>
+        </div>
+        <div class="input-group">
+            <input type="text" id="userInput" placeholder="कुछ भी टाइप करें या बोलें..." onkeypress="handleKey(event)">
+            <button class="mic-btn" onclick="startVoiceInput()" title="बोलकर टाइप करें">🎙️</button>
+            <button onclick="sendMessage()">भेजें</button>
+        </div>
+    </div>
+
+    <script>
+        // बोलकर लिखने (Speech Recognition) का सेटअप
+        function startVoiceInput() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("आपका ब्राउज़र वॉइस रिकग्निशन सपोर्ट नहीं करता है।");
+                return;
+            }
+            const recognition = new SpeechRecognition();
+            recognition.lang = 'hi-IN'; // आप चाहें तो इसे बदल सकते हैं
+            recognition.start();
+
+            recognition.onresult = function(event) {
+                const speechText = event.results[0][0].transcript;
+                document.getElementById('userInput').value = speechText;
+                sendMessage();
+            };
+        }
+
+        // बोलकर सुनाने (Text-to-Speech) का फंक्शन
+        function speakText(text) {
+            const speech = new SpeechSynthesisUtterance(text);
+            speech.lang = 'hi-IN'; // हिंदी में आवाज़ आउटपुट
+            window.speechSynthesis.speak(speech);
+        }
+
+        function sendMessage() {
+            const inputField = document.getElementById('userInput');
+            const chatBox = document.getElementById('chatBox');
+            const userText = inputField.value.trim();
+
+            if (userText === "") return;
+
+            // यूजर का मैसेज जोड़ें
+            chatBox.innerHTML += `<div class="message user-msg">${userText}</div>`;
+            inputField.value = "";
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // एआई का जवाब (अलग-अलग भाषाओं के हिसाब से)
+            setTimeout(() => {
+                let aiReply = "यह बहुत बेहतरीन सवाल है! दुनिया में हज़ारों भाषाएँ हैं और हर भाषा की अपनी खूबी है।";
+                
+                const lowerText = userText.toLowerCase();
+                if (lowerText.includes("namaste") || lowerText.includes("hello") || lowerText.includes("नमस्ते")) {
+                    aiReply = "नमस्ते! बताइए, आज मैं आपकी किस भाषा या विषय में मदद करूँ?";
+                } else if (lowerText.includes("भारत") || lowerText.includes("india")) {
+                    aiReply = "भारत में संविधान की आठवीं अनुसूची में 22 मुख्य भाषाएँ आधिकारिक हैं, और यहाँ सैंकड़ों बोलियाँ बोली जाती हैं!";
+                }
+
+                chatBox.innerHTML += `<div class="message ai-msg">${aiReply}</div>`;
+                chatBox.scrollTop = chatBox.scrollHeight;
+
+                // एआई बोलकर भी जवाब देगा
+                speakText(aiReply);
+            }, 800);
+        }
+
+        function handleKey(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+    </script>
+
+</body>
+</html>
